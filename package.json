@@ -1,0 +1,20 @@
+{
+  "name": "customer-entity-resolution-workbench",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Customer entity resolution workbench: deterministic keys, fuzzy matching, human adjudication, immutable cluster history.",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "seed": "node scripts/seed.js",
+    "test": "node --test tests/*.test.js",
+    "smoke": "node scripts/smoke.js",
+    "ui-check": "node scripts/ui-check.js"
+  },
+  "devDependencies": {
+    "jsdom": "^25.0.1"
+  }
+}

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Entity Resolution Workbench</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <circle cx="7" cy="7" r="3.2" /><circle cx="17" cy="7" r="3.2" />
+        <circle cx="7" cy="17" r="3.2" /><circle cx="17" cy="17" r="3.2" />
+        <path d="M9.8 7h4.4M7 9.8v4.4M17 9.8v4.4M9.8 17h4.4" stroke-width="1.4" fill="none" />
+      </svg>
+      <span>Entity Resolution Workbench</span>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab" data-view="review" role="tab" aria-selected="true">Review queue</button>
+      <button class="tab" data-view="clusters" role="tab">Clusters</button>
+      <button class="tab" data-view="impact" role="tab">Impact &amp; history</button>
+      <button class="tab" data-view="rules" role="tab">Rules</button>
+      <button class="tab" data-view="imports" role="tab">Imports</button>
+    </nav>
+    <div class="session">
+      <label class="actorField">
+        <span>Acting as</span>
+        <input id="actor" value="analyst.amara" spellcheck="false" autocomplete="off" />
+      </label>
+      <span class="rev" id="revisionPill" title="Workbench revision">rev –</span>
+      <button class="btn ghost" id="refreshBtn" title="Reload data (R)">Refresh</button>
+      <span class="conn" id="connDot" title="Connection"></span>
+    </div>
+  </header>
+
+  <div class="statusstrip" id="statusStrip" hidden></div>
+
+  <main>
+    <section class="view" id="view-review">
+      <div class="metrics" id="reviewMetrics"></div>
+      <div class="split">
+        <div class="panel listPanel">
+          <div class="panelHead">
+            <h2>Candidate pairs</h2>
+            <div class="filters">
+              <select id="bandFilter" aria-label="Band filter">
+                <option value="">All bands</option>
+                <option value="review" selected>Needs review</option>
+                <option value="auto">Auto-linked</option>
+                <option value="reject">Below threshold</option>
+              </select>
+              <label class="chk"><input type="checkbox" id="showDecided" /> show decided</label>
+            </div>
+          </div>
+          <div class="pairList" id="pairList"></div>
+        </div>
+        <div class="panel detailPanel" id="pairDetail">
+          <div class="empty">Select a candidate pair to inspect the evidence.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-clusters" hidden>
+      <div class="panel wide">
+        <div class="panelHead">
+          <h2>Active entity clusters</h2>
+          <span class="hint" id="clusterHint"></span>
+        </div>
+        <div class="clusterGrid" id="clusterGrid"></div>
+      </div>
+      <div class="panel wide" id="manualOpsPanel"></div>
+      <div class="panel wide" id="lineagePanel" hidden>
+        <div class="panelHead">
+          <h2 id="lineageTitle">Cluster history</h2>
+          <button class="btn ghost" id="closeLineage">Close</button>
+        </div>
+        <div id="lineageBody" class="lineageBody"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-impact" hidden>
+      <div class="panel wide">
+        <div class="panelHead">
+          <h2>Impact of last materialization</h2>
+          <div class="filters">
+            <select id="runPicker" aria-label="Rebuild run"></select>
+            <button class="btn ghost" id="resolveAlerts">Resolve open alerts</button>
+          </div>
+        </div>
+        <div id="impactSummary" class="impactSummary"></div>
+        <div id="impactBody" class="impactBody"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-rules" hidden>
+      <div class="split">
+        <div class="panel">
+          <div class="panelHead"><h2>Active rule version</h2><span class="hint" id="ruleHint"></span></div>
+          <div id="ruleEditor"></div>
+        </div>
+        <div class="panel">
+          <div class="panelHead"><h2>Version history</h2></div>
+          <div id="ruleHistory" class="ruleHistory"></div>
+          <div class="ruleHelp">
+            <p>Changing rules or thresholds never edits existing clusters. A new version is
+            created, clusters are re-materialized, and every previous cluster version stays
+            queryable in its lineage with <code>superseded</code> status.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-imports" hidden>
+      <div class="split">
+        <div class="panel">
+          <div class="panelHead"><h2>Import a batch</h2></div>
+          <div class="importForm">
+            <label>Label<input id="impLabel" value="crm nightly" /></label>
+            <label>Idempotency key<input id="impKey" value="" placeholder="generated if blank" /></label>
+            <label class="full">Rows (JSON array)
+              <textarea id="impRows" spellcheck="false" rows="14"></textarea>
+            </label>
+            <div class="rowActions">
+              <button class="btn primary" id="impSubmit">Import</button>
+              <button class="btn ghost" id="impSample">Load sample</button>
+            </div>
+          </div>
+          <div id="impResult" class="impResult"></div>
+        </div>
+        <div class="panel">
+          <div class="panelHead"><h2>Batches</h2></div>
+          <div id="batchList" class="batchList"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" hidden></div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
